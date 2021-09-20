@@ -38,4 +38,12 @@ router.post(
     })
 );
 
+router.get(
+    "/list-domains",
+    asyncHelper.errorWrapper(async (req, res, next) => {
+        var domains = await DB.models.Domain.findAll();
+        res.json(domains);
+    })
+);
+
 module.exports = router;
