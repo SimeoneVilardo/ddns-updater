@@ -1,0 +1,40 @@
+version: "3.9"  # optional since v1.27.0
+services:
+  ddns-updater-server:
+    restart: always
+    container_name: ddns-updater
+    image: simeonevilardo/ddns-updater
+    network_mode: bridge
+    restart: always
+    ports:
+      - "3000:3000"
+    volumes:
+      - /home/ubuntu/nodeflix/videos:/usr/src/videos
+    depends_on:
+      - ddns-updater-db
+    links:
+      - ddns-updater-db
+    environment:
+      - NODE_ENV=production
+      - DB_HOST=ddns-updater-db
+      - DB_PORT=3306
+      - DB_USERNAME=root
+      - DB_PASSWORD=root
+      - DB_NAME=ddns_updater
+      - VIRTUAL_HOST=ddnsup.ga
+      - VIRTUAL_PORT=3000
+      - LETSENCRYPT_HOST=ddnsup.ga
+  ddns-updater-db:
+    container_name: ddns-updater-db
+    network_mode: bridge
+    image: mariadb
+    restart: always
+    ports:
+      - "3306:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=ddns_updater
+volumes:
+  db_data:
