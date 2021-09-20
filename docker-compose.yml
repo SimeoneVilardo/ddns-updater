@@ -21,9 +21,9 @@ services:
       - DB_USERNAME=root
       - DB_PASSWORD=root
       - DB_NAME=ddns_updater
-      - VIRTUAL_HOST=ddnsup.ga
+      - VIRTUAL_HOST=ddnsup.tk
       - VIRTUAL_PORT=3000
-      - LETSENCRYPT_HOST=ddnsup.ga
+      - LETSENCRYPT_HOST=ddnsup.tk
   ddns-updater-db:
     container_name: ddns-updater-db
     network_mode: bridge
