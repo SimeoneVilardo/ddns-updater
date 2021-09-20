@@ -32,19 +32,21 @@ app.use(function (err, req, res, next) {
     res.json(err);
 });
 
-cron.schedule("5 * * * *", async function () {
+cron.schedule("* * * * *", async function () {
     console.log("running a task every 5 minutes");
     try {
         var ip = (await axios.get("https://ipv4bot.whatismyipaddress.com")).data;
         console.log(`IP: ${ip}`);
         const domains = await DB.models.Domain.findAll();
         domains.every(async (domain) => {
-            var response = await axios.get(`https://dynamicdns.park-your-domain.com/update?host=${domain.host}&domain=${domain.domain}&password=${domain.password}&ip=${ip}`);
-            console.log(response);
+            try {
+                var response = await axios.get(`https://dynamicdns.park-your-domain.com/update?host=${domain.host}&domain=${domain.domain}&password=${domain.password}&ip=${ip}`);
+                console.log(response.data);
+            } catch (err) {
+                console.error(err);
+            }
         });
-    } catch (err) {
-        console.error(err);
-    }
+    } catch (err) {}
 });
 
 module.exports = app;
