@@ -8,15 +8,7 @@ const DB = require("../conf/DB");
 router.get(
     "/",
     asyncHelper.errorWrapper(async (req, res, next) => {
-        try {
-            console.log(DB.models);
-            var ip = (await axios.get("https://ipv4bot.whatismyipaddress.com")).data;
-            var response = await axios.get(`https://dynamicdns.park-your-domain.com/update?host=@&domain=streameone.ga&password=351ed1bb140b43a9ac31b47e77680f2f&ip=${ip}`);
-            res.json({ title: `IP: ${ip}`, ddns_response: response.data });
-        } catch (err) {
-            console.error(err);
-            res.json(err);
-        }
+        res.json({ message: "OK" });
     })
 );
 
