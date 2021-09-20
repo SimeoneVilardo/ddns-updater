@@ -7,8 +7,6 @@ on:
   # Triggers the workflow on push or pull request events but only for the master branch
   push:
     branches: [ master ]
-    tags:
-      - "v*.*.*"
   pull_request:
     branches: [ master ]
 
@@ -42,7 +40,7 @@ jobs:
           platforms: linux/arm64/v8
           file: ./Dockerfile
           push: true
-          tags: ${{ secrets.DOCKER_HUB_USERNAME }}/express-test:latest
+          tags: ${{ secrets.DOCKER_HUB_USERNAME }}/ddns-updater:latest
 
       - name: Image digest
         run: echo ${{ steps.docker_build.outputs.digest }}
