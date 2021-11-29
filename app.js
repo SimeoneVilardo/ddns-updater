@@ -6,6 +6,7 @@ const cron = require("node-cron");
 const axios = require("axios");
 const indexRouter = require("./routes/index");
 const DB = require("./conf/DB");
+const config = require("./conf/config");
 
 const app = express();
 
@@ -23,30 +24,26 @@ app.use(function (req, res, next) {
 
 // error handler
 app.use(function (err, req, res, next) {
-    // set locals, only providing error in development
-    res.locals.message = err.message;
-    res.locals.error = req.app.get("env") === "development" ? err : {};
-
-    // render the error page
     res.status(err.status || 500);
     res.json(err);
 });
 
-cron.schedule("* * * * *", async function () {
-    console.log("running a task every 5 minutes");
+cron.schedule(config.cron.time, async function () {
+    console.log(`Running a cron task with config ${config.cron.time}`);
     try {
-        var ip = (await axios.get("https://ipv4bot.whatismyipaddress.com")).data;
-        console.log(`IP: ${ip}`);
         const domains = await DB.models.Domain.findAll();
+        console.log("domains", domains);
         domains.every(async (domain) => {
             try {
-                var response = await axios.get(`https://dynamicdns.park-your-domain.com/update?host=${domain.host}&domain=${domain.domain}&password=${domain.password}&ip=${ip}`);
+                var response = await axios.get(config.url.update_ip, {params: {host:domain.host, domain:domain.domain, password: domain.password}});
                 console.log(response.data);
             } catch (err) {
                 console.error(err);
             }
         });
-    } catch (err) {}
+    } catch (err) {
+        console.error(err);
+    }
 });
 
 module.exports = app;
